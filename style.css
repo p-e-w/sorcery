@@ -1,0 +1,38 @@
+#sorcery-button.flashing-icon .drawer-icon {
+    opacity: 1 !important;
+    text-shadow: 0 0 10px #0ff !important;
+}
+
+#sorcery-button .drawer-content {
+    padding: 10px;
+}
+
+#sorcery-button .caution {
+    margin-top: 1em;
+    margin-bottom: 1em;
+    color: var(--golden);
+}
+
+#sorcery-button .inline-drawer-content label {
+    width: 100%;
+}
+
+#sorcery-button code-input {
+    border: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 5px;
+    font-family: var(--monoFontFamily);
+    --padding: 5px;
+    margin: 5px 0;
+    resize: vertical;
+    width: 100%;
+    height: 150px;
+}
+
+#sorcery-button code-input:has(textarea:focus) {
+    outline: 1px solid var(--interactable-outline-color-faint);
+}
+
+#sorcery-button code-input.sorcery-condition {
+    font-family: var(--mainFontFamily);
+    height: fit-content;
+}

@@ -1,0 +1,11 @@
+{
+    "display_name": "Sorcery",
+    "requires": [],
+    "optional": [],
+    "js": "main.js",
+    "css": "style.css",
+    "author": "Philipp Emanuel Weidmann <pew@worldwidemann.com>",
+    "version": "1.0.0",
+    "homePage": "https://github.com/p-e-w/sorcery",
+    "auto_update": true
+}

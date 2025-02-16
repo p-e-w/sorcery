@@ -1,0 +1,43 @@
+<div id="sorcery-button" class="drawer">
+    <div class="drawer-toggle drawer-header">
+        <div class="drawer-icon fa-solid fa-hat-wizard fa-fw closedIcon" title="Sorcery"></div>
+    </div>
+
+    <div class="drawer-content closedDrawer">
+        <div class="flex-container alignitemscenter">
+            <h3 class="margin0 flex1">
+                <span>Sorcery</span>
+                <a href="https://github.com/p-e-w/sorcery" class="notes-link" target="_blank">
+                    <span class="fa-solid fa-circle-question note-link-span"></span>
+                </a>
+                <small>Execute arbitrary STscript/JavaScript when things happen in the chat</small>
+            </h3>
+            <label class="checkbox_label" title="Globally enable/disable Sorcery script execution">
+                <input id="sorcery-enabled" type="checkbox" />
+                Enabled
+            </label>
+        </div>
+
+        <div class="caution">
+            <strong>Caution:</strong>
+            STscript can perform potentially destructive actions such as delete messages and chats,
+            and JavaScript can do anything STscript can, plus things like read your API keys
+            and contact external servers. Think before you type, and do not paste random code here
+            if you don't understand what it does.
+        </div>
+
+        <div class="flex-container alignitemscenter">
+            <div id="sorcery-new" class="menu_button menu_button_icon">
+                <i class="fa-solid fa-plus"></i>
+                <span>New script</span>
+            </div>
+            <div class="flex1"></div>
+            <label class="checkbox_label">
+                <input id="sorcery-flash-icon" type="checkbox" />
+                Flash hat icon when executing script
+            </label>
+        </div>
+
+        <div id="sorcery-scripts"></div>
+    </div>
+</div>

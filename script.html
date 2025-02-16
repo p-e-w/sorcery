@@ -1,0 +1,36 @@
+<div class="world_entry">
+    <div class="inline-drawer wide100p">
+        <div class="inline-drawer-header gap5px padding0">
+            <div class="gap5px world_entry_thin_controls wide100p alignitemscenter">
+                <div class="inline-drawer-toggle fa-fw fa-solid fa-circle-chevron-down inline-drawer-icon down">
+                </div>
+                <div class="sorcery-enabled fa-solid killSwitch" title="Enable/disable script"></div>
+                <code-input language="handlebars" class="sorcery-condition"
+                    placeholder="When this happens..."></code-input>
+            </div>
+
+            <i class="sorcery-duplicate menu_button fa-solid fa-paste" title="Duplicate script"></i>
+            <i class="sorcery-delete menu_button fa-solid fa-trash-can" title="Delete script"></i>
+        </div>
+
+        <div class="inline-drawer-content flex-container paddingBottom5px wide100p" style="display: none;">
+            <label>
+                Run this
+                <a href="https://docs.sillytavern.app/usage/st-script/" target="_blank">STscript</a>
+                <code-input language="sorcery-stscript" class="sorcery-stscript" placeholder=""></code-input>
+            </label>
+
+            <label>
+                Run this JavaScript
+                <br>
+                <small>
+                    JavaScript is executed in the browser using a
+                    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/Function"
+                        target="_blank"><code style="color: unset;">Function</code> object</a>.
+                    It has access to the global scope, as well as to all browser APIs.
+                </small>
+                <code-input language="javascript" class="sorcery-javascript" placeholder=""></code-input>
+            </label>
+        </div>
+    </div>
+</div>
