@@ -69,6 +69,14 @@ function restoreSystemPrompt() {
     power_user.sysprompt.content = originalSystemPrompt;
 }
 
+function runSTscript(stscript) {
+    executeSlashCommandsWithOptions(stscript);
+}
+
+function runJavaScript(javascript) {
+    Function(javascript)();
+}
+
 function runScript(script) {
     console.log(`${NAME}: Running script ${script.id}...`);
 
@@ -79,11 +87,11 @@ function runScript(script) {
     }
 
     if (script.stscript.trim().length > 0) {
-        executeSlashCommandsWithOptions(script.stscript);
+        runSTscript(script.stscript);
     }
 
     if (script.javascript.trim().length > 0) {
-        Function(script.javascript)();
+        runJavaScript(script.javascript);
     }
 }
 
@@ -129,7 +137,7 @@ function installStreamHook() {
 
             text = text.replaceAll(markerRegex, "");
 
-            originalOnProgressStreaming(messageId, text, isFinal);
+            return originalOnProgressStreaming(messageId, text, isFinal);
         }
 
         streamingProcessor.onProgressStreaming = onProgressStreaming;
@@ -242,9 +250,17 @@ $(async () => {
             saveSettingsDebounced();
         });
 
+        scriptElement.find(".sorcery-run-stscript").click(() => {
+            runSTscript(script.stscript);
+        });
+
         scriptElement.find(".sorcery-javascript").val(script.javascript).on("input", function () {
             script.javascript = this.value;
             saveSettingsDebounced();
+        });
+
+        scriptElement.find(".sorcery-run-javascript").click(() => {
+            runJavaScript(script.javascript);
         });
 
         return scriptElement;

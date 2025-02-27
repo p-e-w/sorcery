@@ -36,3 +36,27 @@
     font-family: var(--mainFontFamily);
     height: fit-content;
 }
+
+#sorcery-button .sorcery-run-wrapper {
+    display: grid;
+}
+
+#sorcery-button .sorcery-run-wrapper .sorcery-run {
+    grid-area: 1/1;
+    align-self: start;
+    justify-self: end;
+    z-index: 100;
+    transform: translate(-5px, 5px);
+}
+
+#sorcery-button .sorcery-run-wrapper .sorcery-run:hover {
+    background-color: color-mix(in srgb, var(--SmartThemeBlurTintColor), var(--active) 30%);
+}
+
+#sorcery-button .sorcery-run-wrapper .sorcery-run i {
+    color: var(--active);
+}
+
+#sorcery-button .sorcery-run-wrapper code-input {
+    grid-area: 1/1;
+}
