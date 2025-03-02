@@ -3,6 +3,7 @@
 
 import { renderExtensionTemplateAsync } from "../../../extensions.js";
 import { power_user } from "../../../power-user.js";
+import { promptManager } from "../../../openai.js";
 import { executeSlashCommandsWithOptions } from "../../../slash-commands.js";
 import { eventSource, event_types, streamingProcessor, saveSettingsDebounced } from "../../../../script.js";
 import { Handlebars, hljs } from "../../../../lib.js";
@@ -47,26 +48,39 @@ function getEnabledScripts() {
     }
 }
 
+function getMainPrompt() {
+    for (const prompt of promptManager.serviceSettings.prompts) {
+        if (prompt.identifier === "main") {
+            return prompt;
+        }
+    }
+}
+
 let originalSystemPrompt;
+let originalMainPrompt;
 let enabledScripts;
 let hookToBeInstalled;
 
 function injectInstructions() {
     originalSystemPrompt = power_user.sysprompt.content;
+    originalMainPrompt = getMainPrompt().content;
+
     enabledScripts = getEnabledScripts();
 
     if (enabledScripts.length > 0) {
         const instructionsTemplate = Handlebars.compile(settings.instructions, { noEscape: true });
         const instructions = instructionsTemplate({ scripts: enabledScripts });
         power_user.sysprompt.content += instructions;
+        getMainPrompt().content += instructions;
         hookToBeInstalled = true;
     } else {
         hookToBeInstalled = false;
     }
 }
 
-function restoreSystemPrompt() {
+function restorePrompts() {
     power_user.sysprompt.content = originalSystemPrompt;
+    getMainPrompt().content = originalMainPrompt;
 }
 
 function runSTscript(stscript) {
@@ -147,7 +161,7 @@ function installStreamHook() {
 
 eventSource.on(event_types.GENERATION_AFTER_COMMANDS, injectInstructions);
 
-eventSource.on(event_types.GENERATE_AFTER_COMBINE_PROMPTS, restoreSystemPrompt);
+eventSource.on(event_types.GENERATE_AFTER_DATA, restorePrompts);
 
 // This is less than ideal because `STREAM_TOKEN_RECEIVED` is emitted for each token during generation
 // even though we only need to install the hook once. Unfortunately, it is the *only* event emitted

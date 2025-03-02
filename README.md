@@ -32,19 +32,17 @@ into 12 GB VRAM.
 
 ## Requirements
 
-For Sorcery to work, you need:
+For Sorcery to work, you need one of the following:
 
-* A text completion backend
-* Instruct mode enabled
-* System prompt enabled
-* Any character-specific system prompt overrides *disabled*
+* A **text completion** backend with instruct mode and system prompt enabled,
+  and character-specific system prompt overrides disabled.
+* A **chat completion** backend with the main prompt enabled.
 
-Most users of local models will already have this configuration, and don't
-need to do anything special.
+Most users will already have such a configuration, and don't need to do anything special.
 
-Sorcery may or may not work with API-only hosted models supporting only chat
-completion mode. I don't use such models myself, and haven't tested this case.
-Feedback is appreciated.
+Sorcery is developed and tested with the latest stable version of SillyTavern.
+It may or may not work with older versions. Sorcery relies on several interfaces from
+SillyTavern's internal API, which makes backward compatibility difficult to achieve.
 
 
 ## Installation
