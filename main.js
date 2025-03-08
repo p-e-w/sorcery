@@ -56,31 +56,43 @@ function getMainPrompt() {
     }
 }
 
+let instructionsInjected = false;
 let originalSystemPrompt;
 let originalMainPrompt;
 let enabledScripts;
 let hookToBeInstalled;
 
 function injectInstructions() {
-    originalSystemPrompt = power_user.sysprompt.content;
-    originalMainPrompt = getMainPrompt().content;
+    // Due to SillyTavern's "dry run" mechanism, it is possible for two generations to interleave
+    // under certain circumstances. This leads to `injectInstructions` being invoked twice in a row
+    // without a call to `restorePrompts` in between, which would result in two copies of the instructions
+    // being injected. This guard protects against this rare occurrence, and prevents the second injection.
+    if (!instructionsInjected) {
+        originalSystemPrompt = power_user.sysprompt.content;
+        originalMainPrompt = getMainPrompt().content;
 
-    enabledScripts = getEnabledScripts();
+        enabledScripts = getEnabledScripts();
 
-    if (enabledScripts.length > 0) {
-        const instructionsTemplate = Handlebars.compile(settings.instructions, { noEscape: true });
-        const instructions = instructionsTemplate({ scripts: enabledScripts });
-        power_user.sysprompt.content += instructions;
-        getMainPrompt().content += instructions;
-        hookToBeInstalled = true;
-    } else {
-        hookToBeInstalled = false;
+        if (enabledScripts.length > 0) {
+            const instructionsTemplate = Handlebars.compile(settings.instructions, { noEscape: true });
+            const instructions = instructionsTemplate({ scripts: enabledScripts });
+            power_user.sysprompt.content += instructions;
+            getMainPrompt().content += instructions;
+            hookToBeInstalled = true;
+        } else {
+            hookToBeInstalled = false;
+        }
+
+        instructionsInjected = true;
     }
 }
 
 function restorePrompts() {
-    power_user.sysprompt.content = originalSystemPrompt;
-    getMainPrompt().content = originalMainPrompt;
+    if (instructionsInjected) {
+        power_user.sysprompt.content = originalSystemPrompt;
+        getMainPrompt().content = originalMainPrompt;
+        instructionsInjected = false;
+    }
 }
 
 function runSTscript(stscript) {
