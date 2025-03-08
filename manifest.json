@@ -5,7 +5,7 @@
     "js": "main.js",
     "css": "style.css",
     "author": "Philipp Emanuel Weidmann <pew@worldwidemann.com>",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "homePage": "https://github.com/p-e-w/sorcery",
     "auto_update": true
 }
