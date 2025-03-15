@@ -10,12 +10,16 @@ import { Handlebars, hljs } from "../../../../lib.js";
 import { NAME } from "./common.js";
 import { loadSettings } from "./settings.js";
 
+import { extension_settings } from "../../../extensions.js";
+import { registerSlashCommand } from "../../../slash-commands.js";
+
 
 // @ts-ignore: Hack to suppress IDE errors due to SillyTavern's
 //             weird mix of imports and globally defined objects.
 const $ = window.$;
 
 const settings = loadSettings();
+
 
 function addScript(script = {}) {
     const ids = settings.scripts.map(script => script.id);
@@ -201,6 +205,75 @@ function clickHandlerHack() {
 // but SillyTavern's complete lack of encapsulation makes it hard to find a clean solution.
 hljs.registerLanguage("sorcery-stscript", () => hljs.getLanguage("stscript"));
 
+// Enable a script by ID
+const enableScript = (_, scriptId) => {
+    if (!scriptId) {
+        toastr.warning("Please provide a script ID to enable");
+        return;
+    }
+    
+    
+    const id = parseInt(scriptId);
+    if (isNaN(id)) {
+        toastr.error("Script ID must be a number");
+        return;
+    }
+    
+    const script = settings.scripts.find(s => s.id === id);
+    
+    if (!script) {
+        toastr.error(`No script found with ID ${id}`);
+        return;
+    }
+    
+    script.enabled = true;
+    
+    // Update the visual toggle if the script is currently rendered
+    $(`.sorcery-id span:contains('${id}')`).closest('.world_entry').find('.sorcery-enabled')
+        .removeClass('fa-toggle-off')
+        .addClass('fa-toggle-on');
+    
+    toastr.success(`Script with ID ${id} has been enabled`);
+    saveSettingsDebounced();
+};
+
+// Disable a script by ID
+const disableScript = (_, scriptId) => {
+    if (!scriptId) {
+        toastr.warning("Please provide a script ID to disable");
+        return;
+    }
+    
+    
+    const id = parseInt(scriptId);
+    if (isNaN(id)) {
+        toastr.error("Script ID must be a number");
+        return;
+    }
+    
+    const script = settings.scripts.find(s => s.id === id);
+    
+    if (!script) {
+        toastr.error(`No script found with ID ${id}`);
+        return;
+    }
+    
+    script.enabled = false;
+    
+    // Update the visual toggle if the script is currently rendered
+    $(`.sorcery-id span:contains('${id}')`).closest('.world_entry').find('.sorcery-enabled')
+        .removeClass('fa-toggle-on')
+        .addClass('fa-toggle-off');
+    
+    toastr.success(`Script with ID ${id} has been disabled`);
+    saveSettingsDebounced();
+};
+
+// Register the slash commands
+registerSlashCommand('sorcery-enable', enableScript, [], 'Enable a Sorcery script by ID number', true, true);
+registerSlashCommand('sorcery-disable', disableScript, [], 'Disable a Sorcery script by ID number', true, true);
+
+
 $(async () => {
     // The code-input library is neither a module with exports, nor does it add its symbols
     // to any global objects. It must be loaded as a regular DOM script.
@@ -238,10 +311,14 @@ $(async () => {
         scriptElement.find(".sorcery-condition textarea").trigger("focus");
     }
 
-    function addScriptElement(script) {
+    function addScriptElement(script) {	
+    	
         const scriptElement = $(scriptHtml);
         scriptsElement.prepend(scriptElement);
-
+		
+		// Add the script ID to the display
+    	scriptElement.find(".sorcery-id span").text(script.id);
+		
         scriptElement.find(".sorcery-duplicate").click(() => {
             const s = addScript(script);
             const scriptElement = addScriptElement(s);
