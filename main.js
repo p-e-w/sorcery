@@ -202,69 +202,46 @@ function clickHandlerHack() {
 // but SillyTavern's complete lack of encapsulation makes it hard to find a clean solution.
 hljs.registerLanguage("sorcery-stscript", () => hljs.getLanguage("stscript"));
 
-// Enable a script by ID
+// Helper function to handle changing script states
+function changeScriptState(scriptId, enabled) {
+    if (!scriptId && scriptId !== 0) {
+        toastr.warning(`Please provide a script ID to ${enabled ? "enable" : "disable"}`);
+        return false;
+    }
+       
+    const id = parseInt(scriptId);
+    if (isNaN(id)) {
+        toastr.error("Script ID must be a number");
+        return false;
+    }
+   
+    const script = settings.scripts.find(s => s.id === id);
+   
+    if (!script) {
+        toastr.error(`No script found with ID ${id}`);
+        return false;
+    }
+   
+    script.enabled = enabled;
+   
+    // Update the visual toggle if the script is currently rendered using data attributes
+    $(`.sorcery-id[data-script-id="${id}"]`).closest(".world_entry").find(".sorcery-enabled")
+        .removeClass(enabled ? "fa-toggle-off" : "fa-toggle-on")
+        .addClass(enabled ? "fa-toggle-on" : "fa-toggle-off");
+   
+    toastr.success(`Script with ID ${id} has been ${enabled ? "enabled" : "disabled"}`);
+    saveSettingsDebounced();
+    return true;
+}
+
 function enableScript(_, scriptId) {
-    if (!scriptId) {
-        toastr.warning("Please provide a script ID to enable");
-        return;
-    }
-       
-    const id = parseInt(scriptId);
-    if (isNaN(id)) {
-        toastr.error("Script ID must be a number");
-        return;
-    }
-    
-    const script = settings.scripts.find(s => s.id === id);
-    
-    if (!script) {
-        toastr.error(`No script found with ID ${id}`);
-        return;
-    }
-    
-    script.enabled = true;
-    
-    // Update the visual toggle if the script is currently rendered using data attributes
-    $(`.sorcery-id[data-script-id="${id}"]`).closest('.world_entry').find('.sorcery-enabled')
-        .removeClass('fa-toggle-off')
-        .addClass('fa-toggle-on');
-    
-    toastr.success(`Script with ID ${id} has been enabled`);
-    saveSettingsDebounced();
-};
+    changeScriptState(scriptId, true);
+}
 
-// Disable a script by ID
 function disableScript(_, scriptId) {
-    if (!scriptId) {
-        toastr.warning("Please provide a script ID to disable");
-        return;
-    }
-       
-    const id = parseInt(scriptId);
-    if (isNaN(id)) {
-        toastr.error("Script ID must be a number");
-        return;
-    }
-    
-    const script = settings.scripts.find(s => s.id === id);
-    
-    if (!script) {
-        toastr.error(`No script found with ID ${id}`);
-        return;
-    }
-    
-    script.enabled = false;
-    
-    // Update the visual toggle if the script is currently rendered using data attributes
-    $(`.sorcery-id[data-script-id="${id}"]`).closest('.world_entry').find('.sorcery-enabled')
-        .removeClass('fa-toggle-on')
-        .addClass('fa-toggle-off');
-    
-    toastr.success(`Script with ID ${id} has been disabled`);
-    saveSettingsDebounced();
-};
+    changeScriptState(scriptId, false);
+}
 
-// Register the slash commands
 registerSlashCommand("sorcery-enable", enableScript, [], "Enable a Sorcery script by ID number", true, true);
 registerSlashCommand("sorcery-disable", disableScript, [], "Disable a Sorcery script by ID number", true, true);
 
@@ -305,13 +282,12 @@ $(async () => {
         scriptElement.find(".sorcery-condition textarea").trigger("focus");
     }
 
-    function addScriptElement(script) {	   	
+    function addScriptElement(script) {
         const scriptElement = $(scriptHtml);
         scriptsElement.prepend(scriptElement);
-		
-        // Add the script ID to the data attribute
-        scriptElement.find(".sorcery-id").attr("data-script-id", script.id);
+        
         // Add the script ID to the display
+        scriptElement.find(".sorcery-id").attr("data-script-id", script.id);
         scriptElement.find(".sorcery-id span").text(script.id);
 		
         scriptElement.find(".sorcery-duplicate").click(() => {

@@ -65,15 +65,11 @@
     font-size: 0.85em;
     padding: 2px 6px;
     border-radius: 8px;
-    margin-right: 8px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
     background-color: var(--SmartThemeBorderColor);
-    color: var(--SmartThemeEmColor)     
+    color: var(--SmartThemeEmColor)
 }
 
 .sorcery-id span {
     font-weight: bold;
-    color: #ccc;
+    color: var(--SmartThemeQuoteColor);
 }
