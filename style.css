@@ -63,14 +63,14 @@
 
 .sorcery-id {
     font-size: 0.85em;
-    background-color: rgba(0, 0, 0, 0.2);
     padding: 2px 6px;
     border-radius: 8px;
     margin-right: 8px;
-    color: #aaa;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    background-color: var(--SmartThemeBorderColor);
+    color: var(--SmartThemeEmColor)     
 }
 
 .sorcery-id span {

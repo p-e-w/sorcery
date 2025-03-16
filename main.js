@@ -9,8 +9,6 @@ import { eventSource, event_types, streamingProcessor, saveSettingsDebounced } f
 import { Handlebars, hljs } from "../../../../lib.js";
 import { NAME } from "./common.js";
 import { loadSettings } from "./settings.js";
-
-import { extension_settings } from "../../../extensions.js";
 import { registerSlashCommand } from "../../../slash-commands.js";
 
 
@@ -19,7 +17,6 @@ import { registerSlashCommand } from "../../../slash-commands.js";
 const $ = window.$;
 
 const settings = loadSettings();
-
 
 function addScript(script = {}) {
     const ids = settings.scripts.map(script => script.id);
@@ -206,13 +203,12 @@ function clickHandlerHack() {
 hljs.registerLanguage("sorcery-stscript", () => hljs.getLanguage("stscript"));
 
 // Enable a script by ID
-const enableScript = (_, scriptId) => {
+function enableScript(_, scriptId) {
     if (!scriptId) {
         toastr.warning("Please provide a script ID to enable");
         return;
     }
-    
-    
+       
     const id = parseInt(scriptId);
     if (isNaN(id)) {
         toastr.error("Script ID must be a number");
@@ -228,8 +224,8 @@ const enableScript = (_, scriptId) => {
     
     script.enabled = true;
     
-    // Update the visual toggle if the script is currently rendered
-    $(`.sorcery-id span:contains('${id}')`).closest('.world_entry').find('.sorcery-enabled')
+    // Update the visual toggle if the script is currently rendered using data attributes
+    $(`.sorcery-id[data-script-id="${id}"]`).closest('.world_entry').find('.sorcery-enabled')
         .removeClass('fa-toggle-off')
         .addClass('fa-toggle-on');
     
@@ -238,13 +234,12 @@ const enableScript = (_, scriptId) => {
 };
 
 // Disable a script by ID
-const disableScript = (_, scriptId) => {
+function disableScript(_, scriptId) {
     if (!scriptId) {
         toastr.warning("Please provide a script ID to disable");
         return;
     }
-    
-    
+       
     const id = parseInt(scriptId);
     if (isNaN(id)) {
         toastr.error("Script ID must be a number");
@@ -260,8 +255,8 @@ const disableScript = (_, scriptId) => {
     
     script.enabled = false;
     
-    // Update the visual toggle if the script is currently rendered
-    $(`.sorcery-id span:contains('${id}')`).closest('.world_entry').find('.sorcery-enabled')
+    // Update the visual toggle if the script is currently rendered using data attributes
+    $(`.sorcery-id[data-script-id="${id}"]`).closest('.world_entry').find('.sorcery-enabled')
         .removeClass('fa-toggle-on')
         .addClass('fa-toggle-off');
     
@@ -270,9 +265,8 @@ const disableScript = (_, scriptId) => {
 };
 
 // Register the slash commands
-registerSlashCommand('sorcery-enable', enableScript, [], 'Enable a Sorcery script by ID number', true, true);
-registerSlashCommand('sorcery-disable', disableScript, [], 'Disable a Sorcery script by ID number', true, true);
-
+registerSlashCommand("sorcery-enable", enableScript, [], "Enable a Sorcery script by ID number", true, true);
+registerSlashCommand("sorcery-disable", disableScript, [], "Disable a Sorcery script by ID number", true, true);
 
 $(async () => {
     // The code-input library is neither a module with exports, nor does it add its symbols
@@ -316,8 +310,10 @@ $(async () => {
         const scriptElement = $(scriptHtml);
         scriptsElement.prepend(scriptElement);
 		
-		// Add the script ID to the display
-    	scriptElement.find(".sorcery-id span").text(script.id);
+        // Add the script ID to the data attribute
+        scriptElement.find(".sorcery-id").attr("data-script-id", script.id);
+        // Add the script ID to the display
+        scriptElement.find(".sorcery-id span").text(script.id);
 		
         scriptElement.find(".sorcery-duplicate").click(() => {
             const s = addScript(script);
