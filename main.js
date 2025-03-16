@@ -305,8 +305,7 @@ $(async () => {
         scriptElement.find(".sorcery-condition textarea").trigger("focus");
     }
 
-    function addScriptElement(script) {	
-    	
+    function addScriptElement(script) {	   	
         const scriptElement = $(scriptHtml);
         scriptsElement.prepend(scriptElement);
 		
