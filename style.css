@@ -61,7 +61,7 @@
     grid-area: 1/1;
 }
 
-.sorcery-id {
+#sorcery-button .sorcery-id {
     font-size: 0.85em;
     padding: 2px 6px;
     border-radius: 8px;
@@ -69,7 +69,7 @@
     color: var(--SmartThemeEmColor)
 }
 
-.sorcery-id span {
+#sorcery-button .sorcery-id span {
     font-weight: bold;
     color: var(--SmartThemeQuoteColor);
 }
