@@ -60,3 +60,18 @@
 #sorcery-button .sorcery-run-wrapper code-input {
     grid-area: 1/1;
 }
+
+#sorcery-button .sorcery-id {
+    width: 3em;
+    text-align: center;
+    font-size: 0.85em;
+    padding: 2px 6px;
+    border-radius: 8px;
+    background-color: var(--SmartThemeBorderColor);
+    color: var(--SmartThemeEmColor);
+}
+
+#sorcery-button .sorcery-id span {
+    font-weight: bold;
+    color: var(--SmartThemeQuoteColor);
+}
