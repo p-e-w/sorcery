@@ -9,7 +9,6 @@ import { eventSource, event_types, streamingProcessor, saveSettingsDebounced } f
 import { Handlebars, hljs } from "../../../../lib.js";
 import { NAME } from "./common.js";
 import { loadSettings } from "./settings.js";
-import { registerSlashCommand } from "../../../slash-commands.js";
 
 
 // @ts-ignore: Hack to suppress IDE errors due to SillyTavern's
@@ -202,49 +201,6 @@ function clickHandlerHack() {
 // but SillyTavern's complete lack of encapsulation makes it hard to find a clean solution.
 hljs.registerLanguage("sorcery-stscript", () => hljs.getLanguage("stscript"));
 
-// Helper function to handle changing script states
-function changeScriptState(scriptId, enabled) {
-    if (!scriptId && scriptId !== 0) {
-        toastr.warning(`Please provide a script ID to ${enabled ? "enable" : "disable"}`);
-        return false;
-    }
-       
-    const id = parseInt(scriptId);
-    if (isNaN(id)) {
-        toastr.error("Script ID must be a number");
-        return false;
-    }
-   
-    const script = settings.scripts.find(s => s.id === id);
-   
-    if (!script) {
-        toastr.error(`No script found with ID ${id}`);
-        return false;
-    }
-   
-    script.enabled = enabled;
-   
-    // Update the visual toggle if the script is currently rendered using data attributes
-    $(`.sorcery-id[data-script-id="${id}"]`).closest(".world_entry").find(".sorcery-enabled")
-        .removeClass(enabled ? "fa-toggle-off" : "fa-toggle-on")
-        .addClass(enabled ? "fa-toggle-on" : "fa-toggle-off");
-   
-    toastr.success(`Script with ID ${id} has been ${enabled ? "enabled" : "disabled"}`);
-    saveSettingsDebounced();
-    return true;
-}
-
-function enableScript(_, scriptId) {
-    changeScriptState(scriptId, true);
-}
-
-function disableScript(_, scriptId) {
-    changeScriptState(scriptId, false);
-}
-
-registerSlashCommand("sorcery-enable", enableScript, [], "Enable a Sorcery script by ID number", true, true);
-registerSlashCommand("sorcery-disable", disableScript, [], "Disable a Sorcery script by ID number", true, true);
-
 $(async () => {
     // The code-input library is neither a module with exports, nor does it add its symbols
     // to any global objects. It must be loaded as a regular DOM script.
@@ -285,11 +241,7 @@ $(async () => {
     function addScriptElement(script) {
         const scriptElement = $(scriptHtml);
         scriptsElement.prepend(scriptElement);
-        
-        // Add the script ID to the display
-        scriptElement.find(".sorcery-id").attr("data-script-id", script.id);
-        scriptElement.find(".sorcery-id span").text(script.id);
-		
+
         scriptElement.find(".sorcery-duplicate").click(() => {
             const s = addScript(script);
             const scriptElement = addScriptElement(s);
